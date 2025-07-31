@@ -1,11 +1,7 @@
 import { type IRepository } from "../interface/repository.ts";
 import knex from "knex";
-
-type User = {
-  name: string;
-  username: string;
-  password: string;
-};
+import { type User } from "../types/user.ts";
+import { InvalidUserError } from "../errs/invalidUser.ts";
 
 export default class PostgresRepository implements IRepository<User> {
   private instance;
@@ -16,8 +12,12 @@ export default class PostgresRepository implements IRepository<User> {
   }
 
   save(user: User): Promise<void> {
-    throw new Error("Method not implemented.");
+    if (!user.name || !user.username || !user.password) {
+      throw new InvalidUserError("check the user and try again");
+    }
+    return this.instance("users").insert(user);
   }
+
   findAll(): Promise<[User]> {
     throw new Error("Method not implemented.");
   }
