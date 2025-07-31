@@ -11,18 +11,20 @@ export default class PostgresRepository implements IRepository<User> {
     this.connectString = connectString;
   }
 
-  save(user: User): Promise<void> {
+  async save(user: User): Promise<void> {
     if (!user.name || !user.username || !user.password) {
       throw new InvalidUserError("check the user and try again");
     }
+
     return this.instance("users").insert(user);
   }
 
-  findAll(): Promise<[User]> {
-    throw new Error("Method not implemented.");
+  async findAll(): Promise<[User]> {
+    const users = this.instance.select().from("users");
+    return users;
   }
 
-  connect(): Promise<unknown> {
+  async connect(): Promise<unknown> {
     this.instance = knex({
       client: "pg",
       connection: this.connectString,
