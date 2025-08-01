@@ -1,10 +1,10 @@
 import { Collection, MongoClient } from "mongodb";
 import { type IRepository } from "../interface/repository.ts";
-import { type User } from "../types/user.ts";
+import { type Product } from "../types/product.ts";
 import DatabaseConnectionError from "../errs/databaseConnectionError.ts";
-import InvalidUserError from "../errs/invalidUser.ts";
+import InvalidProductError from "../errs/invalidProduct.ts";
 
-export default class MongoRepository implements IRepository<User> {
+export default class MongoRepository implements IRepository<Product> {
   private instance: Collection;
   private connectionString: string;
   private collection = "products";
@@ -25,7 +25,7 @@ export default class MongoRepository implements IRepository<User> {
       const collection = database.collection(this.collection);
 
       //Necessary for create database and collection
-      collection.insertOne({ initialize: true });
+      //collection.insertOne({ initialize: true });
 
       this.instance = collection;
 
@@ -35,11 +35,20 @@ export default class MongoRepository implements IRepository<User> {
     }
   }
 
-  async save(user: User): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(product: Product): Promise<void> {
+    if (!product.name || !product.category || !product.price) {
+      throw new InvalidProductError("verify the product data and try again!");
+    }
+    const productSaved = await this.instance.insertOne(product);
+    if (!productSaved) throw new Error("fail to inser product");
   }
 
-  async findAll(): Promise<[User]> {
-    throw new Error("Method not implemented.");
+  async findAll(): Promise<[Product]> {
+    const cursor = this.instance.find({});
+    const products: any = [];
+    for await (const item of cursor) {
+      products.push(item);
+    }
+    return products;
   }
 }
