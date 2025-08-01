@@ -1,7 +1,7 @@
 import { type IRepository } from "../interface/repository.ts";
 import knex from "knex";
 import { type User } from "../types/user.ts";
-import { InvalidUserError } from "../errs/invalidUser.ts";
+import InvalidUserError from "../errs/invalidUser.ts";
 
 export default class PostgresRepository implements IRepository<User> {
   private instance;
