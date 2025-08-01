@@ -1,4 +1,4 @@
-export class InvalidUserError extends Error {
+export default class InvalidUserError extends Error {
   name: string;
   constructor(errorMessage: string) {
     super(errorMessage);
