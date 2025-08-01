@@ -1,14 +1,13 @@
-// import dotenv from "dotenv";
-// dotenv.config();
-import PostgresRepository from "./repositories/postgresRepository.ts";
+// import PostgresRepository from "./repositories/postgresRepository.ts";
+import MongoRepository from "./repositories/mongoRepository.ts";
+import { type Product } from "./types/product.ts";
 
-const POSTGRES_URL_CONNECTION = process.env.POSTGRES_CONNECTION_STRING;
+const MONGO_URL_CONNECTION = process.env.MONGO_CONNECTION_STRING || "";
 
-const postgres = new PostgresRepository(POSTGRES_URL_CONNECTION);
+const mongo = new MongoRepository(MONGO_URL_CONNECTION);
 
-try {
-  await postgres.connect();
-  console.log("connection to postgress was successfuly!");
-} catch (err) {
-  console.log(err.message);
-}
+const product: Product = {
+  name: "Sabao",
+  category: "limpeza",
+  price: 6.56,
+};
